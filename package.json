@@ -1,0 +1,15 @@
+{
+  "name": "programing-calculator",
+  "type": "module",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/yiming0/programing-calculator",
+  "author": "yiming <58835791+yiming0@users.noreply.github.com>",
+  "license": "MIT",
+  "scripts": {
+    "dev": "node server.js"
+  },
+  "devDependencies": {
+    "express": "^4.19.2"
+  }
+}
