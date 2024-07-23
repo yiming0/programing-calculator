@@ -39,16 +39,13 @@ export default class Formula {
  * @param {Array} args 
  */
 export function resolving(context, formula, args) {
-    return () => {
+    return () => formula.calc(args.map(i => {
+        if (context.has(i)) return context.result(i)
 
-        return formula.calc(args.map(i => {
-            if (context.has(i)) return context.result(i)
+        if (isNaN(Number(i))) throw `invalid argument: ${i}`
 
-            if (isNaN(Number(i))) throw `invalid argument: ${i}`
-
-            return i
-        }))
-    }
+        return i
+    }))
 }
 
 /**
