@@ -1,12 +1,63 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Programing Calculator</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Programing Calculator</title>
 </head>
+
 <body>
-    
-    <script src="scripts/app.js" type="module"></script>
+	<div id="app">
+		<div v-for="statement in statement_list">
+			<span>{{ statement.name }}: [{{ statement.formula }}]({{ statement.args.join(', ') }})</span>
+		</div>
+	</div>
+
+	<script type="importmap">
+        {
+          "imports": {
+            "vue": "https://unpkg.com/vue@3/dist/vue.esm-browser.prod.js"
+          }
+        }
+    </script>
+	<script type="module">
+		import { computed, createApp, reactive, ref } from 'vue'
+		import { createContext } from "./scripts/formula.js"
+
+		createApp({
+			setup() {
+				const context = createContext()
+				context.put('attack', '=', 2228)
+				context.put('critical-rate', '=', 0.913)
+				context.put('critical-damage-multiple', '=', 2.07)
+
+				context.put('normal-damage', '*', 'attack', 1)
+				context.put('critical-damage', '*', 'attack', 'critical-damage-multiple')
+
+				context.put('1 - critical-rate', '-', 1, 'critical-rate')
+				context.put('expected-normal-damage', '*', 'normal-damage', '1 - critical-rate')
+				context.put('expected-critical-damage', '*', 'critical-damage', 'critical-rate')
+
+				context.put('expected-damage', '+', 'expected-normal-damage', 'expected-critical-damage')
+
+				const order = reactive(context.order)
+
+				return { 
+					context, 
+					statement_list: computed(() => order.map(name => {
+					const formula = context.formulas.find(name).arguments.pop()
+					
+					return {
+						name,
+						formula: formula.name,
+						args: formula.arguments.map(a => a.calculatable ? a.name : a)
+					}
+				}))
+				 }
+			}
+		}).mount('#app')
+	</script>
 </body>
+
 </html>
